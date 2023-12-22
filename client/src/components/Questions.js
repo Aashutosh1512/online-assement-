@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { useFetchQestion } from "../hooks/FetchQuestion";
-import { updateResult } from "../hooks/setResult";
+import { useFetchQestion } from '../hooks/FetchQuestion';
+import { updateResult } from '../hooks/setResult';
 
 export default function Questions({ onChecked, selectedOption, checked }) {
   // const [checked, setChecked] = useState(undefined);
@@ -35,13 +35,13 @@ export default function Questions({ onChecked, selectedOption, checked }) {
     return <h3 className="text-light">isLoading</h3>;
   }
   if (serverError) {
-    return <h3 className="text-light">{serverError || "unknown error"}</h3>;
+    return <h3 className="text-light">{serverError || 'unknown error'}</h3>;
   }
 
   return (
     <div className="questions">
       <h2 className="text-light">
-        {questions?.id}.{" " + questions?.question}
+        {questions?.id}.{' ' + questions?.question}
       </h2>
 
       <ul key={questions?.id}>
@@ -60,7 +60,7 @@ export default function Questions({ onChecked, selectedOption, checked }) {
               {q}
             </label>
             <div
-              className={`check ${result[trace] == i ? "checked" : ""}`}
+              className={`check ${result[trace] == i ? 'checked' : ''}`}
             ></div>
           </li>
         ))}

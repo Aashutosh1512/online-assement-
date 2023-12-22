@@ -1,14 +1,12 @@
-import {combineReducers, configureStore} from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 /** call reducer */
-import  questionReducer  from './queston_reducer'
-import  resultReducer  from './result_reducer'
-import  quizReducer  from './quiz_reducer'
+import quizReducer from './quiz.slice';
+import userReducer from './user.slice';
 
-const rootReducer=combineReducers({
-    questions:questionReducer,
-    result: resultReducer,
-    quiz: quizReducer
-})
-//create store with reducer 
-export default configureStore({reducer:rootReducer})
+const rootReducer = combineReducers({
+  quiz: quizReducer,
+  user: userReducer,
+});
+//create store with reducer
+export default configureStore({ reducer: rootReducer });

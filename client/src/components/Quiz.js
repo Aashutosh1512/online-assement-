@@ -1,157 +1,113 @@
-import React, { useEffect, useState } from "react";
-import Questions from "./Questions";
+import React, { useEffect } from 'react';
 //redux store import
-import { useSelector, useDispatch } from "react-redux";
-import { moveNextQuestion, movePrevQuestion } from "../hooks/FetchQuestion";
-import { PushAnswer } from "../hooks/setResult";
-import { Navigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
 import {
-  setSelectedSubject,
-  setSelectedDifficulty,
-} from "../redux/quiz_reducer";
+  fetchQuestions,
+  selectQuestionsLoading,
+  selectQuestion,
+} from '../redux/quiz.slice';
+
+import { useForm } from 'react-hook-form';
+import subjects from '../constants/subject';
+import difficulties from '../constants/difficulties';
+import { selectUser } from '../redux/user.slice';
+import QuestionCard from './QuestionCard';
+import { useNavigate } from 'react-router-dom';
 
 export default function Quiz() {
-  //next button event handler
-  //const trace=useSelector(state=>state.questions.trace);
-  const [check, setChecked] = useState(undefined);
-  const q = useSelector(
-    (state) => state.questions.queue[state.questions.trace]
-  );
-  const result = useSelector((state) => state.result.result);
-  const { queue, trace } = useSelector((state) => state.questions);
   const dispatch = useDispatch();
 
-  const selectedSubject = useSelector((state) => state.quiz.selectedSubject);
-  const selectedDifficulty = useSelector(
-    (state) => state.quiz.selectedDifficulty
-  );
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-  const handleSubjectChange = (e) => {
-    dispatch(setSelectedSubject(e?.target?.value));
+  const onSubmit = (data) => {
+    dispatch(fetchQuestions(data));
   };
 
-  const handleDifficultyChange = (e) => {
-    dispatch(setSelectedDifficulty(e?.target?.value));
-  };
+  const question = useSelector(selectQuestion);
+  const questionsLoading = useSelector(selectQuestionsLoading);
 
-  function onNext() {
-    console.log("on next click");
+  const subject = watch('subject');
 
-    if (trace < queue.length) {
-      //increase the trace value by one using MoveNextAction
-      dispatch(moveNextQuestion());
+  const user = useSelector(selectUser);
 
-      // insert a new result in the array .
-      if (result.length <= trace) {
-        dispatch(PushAnswer(check));
-      }
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user === null) {
+      navigate('/');
     }
-    //reset the value of the checked variable
-    setChecked(undefined);
-  }
-  //previous button event handler
-  function onPrev() {
-    console.log("on prev click");
-
-    dispatch(movePrevQuestion());
-  }
-
-  function onChecked(check) {
-    console.log(check);
-
-    setChecked(check);
-  }
-  if (result.length && result.length >= queue.length) {
-    return (
-      <Navigate to={"/result"} replace="true">
-        {" "}
-      </Navigate>
-    );
-    //  return <Navigate to={'/user'} replace="true"> </Navigate>
-  }
-
-  const subjects = [
-    {
-      name: "Computer Network",
-      value: "computer-network",
-    },
-    {
-      name: "Java",
-      value: "java",
-    },
-    {
-      name: "Operating Systems",
-      value: "os",
-    },
-    {
-      name: "Database Management System",
-      value: "dbms",
-    },
-  ];
-
-  const difficulty = [
-    {
-      name: "Easy",
-      value: "easy",
-    },
-    {
-      name: "Medium",
-      value: "medium",
-    },
-    {
-      name: "Hard",
-      value: "hard",
-    },
-  ];
+  }, [user, navigate]);
 
   return (
-    <div className="container">
-      <h1 className="title text-light">Skill Tracker </h1>
-      {/** displaying question  */}
+    <div className="bg-prussian_blue-500 space-y-6 p-10 w-full h-screen">
+      <header className="bg-sky_blue-500 flex justify-between items-center w-full rounded-lg p-4">
+        <h3 className="text-2xl font-bold">
+          {subjects.find((sub) => sub.value === subject)?.name} Quiz
+        </h3>
 
-      <div className="radio-buttons-container">
-        <select onChange={handleSubjectChange}>
-          <option disabled={selectedSubject} value={null}>
-            Select a Subject
-          </option>
-          ;
-          {subjects.map((subject, idx) => {
-            return (
-              <option
-                disabled={selectedSubject}
-                value={subject.value}
-                key={idx}
-              >
-                {subject.name}
-              </option>
-            );
-          })}
-        </select>
+        <div className="flex items-center space-x-2">
+          <img
+            src="https://xsgames.co/randomusers/avatar.php?g=pixel"
+            alt={user?.name}
+            className="h-10 w-10 rounded-full overflow-hidden"
+          />
+          <div className="flex-col">
+            <p className="font-bold">{user?.name}</p>
+            <p className="text-sm text-gray-700">{user?.email}</p>
+          </div>
+        </div>
+      </header>
+
+      <div className="bg-sky_blue-500 h-5/6 flex justify-center flex-col space-y-6 items-center w-full rounded-lg p-4">
+        {questionsLoading ? (
+          <div className="">Loading...</div>
+        ) : question ? (
+          <QuestionCard question={question} />
+        ) : (
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col w-80 items-center space-y-8"
+          >
+            <select {...register('subject')} className="p-2 rounded-lg w-full">
+              {subjects.map((subject, idx) => {
+                return (
+                  <option value={subject.value} key={idx}>
+                    {subject.name}
+                  </option>
+                );
+              })}
+            </select>
+
+            <select
+              {...register('difficulty')}
+              className="p-2 rounded-lg w-full"
+            >
+              {difficulties.map((difficulty, idx) => {
+                return (
+                  <option value={difficulty.value} key={idx}>
+                    {difficulty.name}
+                  </option>
+                );
+              })}
+            </select>
+
+            <button
+              type="submit"
+              className="relative rounded px-5 py-2.5 overflow-hidden group bg-prussian_blue-500 hover:bg-gradient-to-r hover:from-prussian_blue-500 hover:to-prussian_blue-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-prussian_blue-400 transition-all ease-out duration-300"
+            >
+              <span className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+              <span className="relative">Start Quiz</span>
+            </button>
+          </form>
+        )}
       </div>
 
-      {selectedSubject ? (
-        <div className="radio-buttons-container">
-          <select onChange={handleDifficultyChange}>
-            <option disabled={selectedDifficulty} value={null}>
-              Select difficulty
-            </option>
-
-            {difficulty.map((dif, idx) => {
-              return (
-                <option
-                  disabled={selectedDifficulty}
-                  value={dif.value}
-                  key={idx}
-                >
-                  {dif.name}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-      ) : null}
-
-      {selectedSubject && selectedDifficulty ? (
+      {/* {selectedSubject && selectedDifficulty ? (
         <>
           <Questions
             onChecked={onChecked}
@@ -164,14 +120,14 @@ export default function Quiz() {
               className="btn prev"
               onClick={onPrev}
             >
-              Prev {"<<"}
+              Prev {'<<'}
             </button>
             <button className="btn next" onClick={onNext}>
-              {trace >= queue.length - 1 ? "Submit" : "Next"} {">>"}
+              {trace >= queue.length - 1 ? 'Submit' : 'Next'} {'>>'}
             </button>
           </div>
         </>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

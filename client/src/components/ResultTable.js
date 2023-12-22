@@ -1,60 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import { getServerData } from '../helper/helper'
+import React, { useEffect, useState } from 'react';
+import { getServerData } from '../helper/helper';
 
 export default function ResultTable() {
- 
-    const [data, setData] = useState([])
+  const [data, setData] = useState([]);
 
-    useEffect(() => {
-        getServerData(`${process.env.REACT_APP_SERVER_HOSTNAME}/api/result`, (res) => {
-            setData(res)
-        })
-    })
+  useEffect(() => {
+    getServerData(
+      `${process.env.REACT_APP_SERVER_HOSTNAME}/api/result`,
+      (res) => {
+        setData(res);
+      }
+    );
+  }, []);
 
   return (
     <div>
-        <table>
-            <thead className='table-header'>
-                <tr className='table-row'>
-                <td>S.no.</td>
-                    <td>Name</td>
-                    <td>Attemps</td>
-                    <td>Earn Points</td>
-                    <td>Result</td>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                { !data ?? <div>No Data Found </div>}
-                {
-                    data.map((v, i) => (
-                        <tr className='table-body' key={i}>
-                        <td>{i}</td>
-                            <td>{v?.username || ''}</td>
-                            <td>{v?.attempts || 0}</td>
-                            <td>{v?.points || 0}</td>
-                            <td>{v?.achived || ""}</td>
-                        </tr>
-                    ))
-                }
-                
-            </tbody>
-        </table>
-
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+          <tr className="text-center">
+            <th className="px-6 py-3">S.no.</th>
+            <th className="px-6 py-3">Name</th>
+            <th className="px-6 py-3">Email</th>
+            <th className="px-6 py-3">Attemps</th>
+            <th className="px-6 py-3">Total Points</th>
+            <th className="px-6 py-3">Points</th>
+            <th className="px-6 py-3">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((v, i) => (
+            <tr className="odd:bg-white text-center even:bg-gray-50" key={i}>
+              <td className="px-6 py-3">{i}</td>
+              <td className="px-6 py-3">{v?.user.name}</td>
+              <td className="px-6 py-3">{v?.user.email}</td>
+              <td className="px-6 py-3">{v?.questionsAttempted}</td>
+              <td className="px-6 py-3">{v?.totalPoints}</td>
+              <td className="px-6 py-3">{v?.points}</td>
+              <td className="px-6 py-3">{v?.achived}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  )
+  );
 }
-
-/** 
- * 
- * 
- * 
- * <LineChart width={600} height={300} data={data}>
-      <XAxis dataKey="name" />
-      <YAxis />
-      <CartesianGrid strokeDasharray="3 3" />
-      <Tooltip />
-      <Legend />
-      <Line type="monotone" dataKey="performance" stroke="#EC524B" activeDot={{ r: 8 }} />
-    </LineChart>
- */

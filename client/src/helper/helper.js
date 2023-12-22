@@ -1,6 +1,6 @@
-import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-import axios from "axios";
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
+import axios from 'axios';
 export function attempts_Number(result) {
   // return result.filter(r=>r!==undefined ).length;
   var x = 0;
@@ -33,8 +33,8 @@ export function CheckUserExist({ children }) {
   return auth ? (
     children
   ) : (
-    <Navigate to={"/"} replace={true}>
-      {" "}
+    <Navigate to={'/'} replace={true}>
+      {' '}
     </Navigate>
   );
 }

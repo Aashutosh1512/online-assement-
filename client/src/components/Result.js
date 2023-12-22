@@ -1,82 +1,72 @@
-import React, { useEffect } from "react";
-import "../styles/Result.css";
-import { Link } from "react-router-dom";
-import ResultTable from "./ResultTable";
+import React, { useEffect } from 'react';
+import ResultTable from './ResultTable';
 
-import { useDispatch, useSelector } from "react-redux";
-import { resetResultAction } from "../redux/result_reducer";
-import { resetAllAction } from "../redux/queston_reducer";
-import {
-  attempts_Number,
-  earnPoints_Number,
-  flagResult,
-} from "../helper/helper";
-import { usePublishResult } from "../hooks/setResult";
+import { useDispatch, useSelector } from 'react-redux';
+import { resetQuiz, selectResult } from '../redux/quiz.slice';
+import { useNavigate } from 'react-router-dom';
+import { selectUser } from '../redux/user.slice';
 
 export default function Result() {
   const dispatch = useDispatch();
-  const {
-    questions: { queue, answers },
-    result: { result, userId },
-  } = useSelector((state) => state);
+  const result = useSelector(selectResult);
 
-  const totalpoints = queue.length * 10;
-  const attempts = attempts_Number(result);
-  const earnPoints = earnPoints_Number(result, answers) * 10;
-  const flag = flagResult(totalpoints, earnPoints);
+  const navigate = useNavigate();
+  const user = useSelector(selectUser);
 
-  //store user result
-  console.log(userId);
-  usePublishResult({
-    result,
-    username: userId,
-    attempts,
-    points: earnPoints,
-    achived: flag ? "Passed" : "Failed",
-  });
+  const restart = () => {
+    dispatch(resetQuiz());
+    navigate('/quiz');
+  };
 
-  function OnRestart() {
-    dispatch(resetAllAction());
-    dispatch(resetResultAction());
-  }
+  useEffect(() => {
+    if (user === null) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
   return (
-    <div className="container">
-      <h1 className="title text-light">Quiz Application</h1>
-      <div className="result flex-center">
-        <div className="flex">
-          <span>UserId</span>
-          <span className="bold"> {userId} </span>
-        </div>
-        <div className="flex">
-          <span>Total Quiz Points :</span>
-          <span className="bold"> {totalpoints || 0}</span>
-        </div>
-        <div className="flex">
-          <span>Total Questions :</span>
-          <span className="bold"> {queue.length || 0}</span>
-        </div>
-        <div className="flex">
-          <span>Total Attempts :</span>
-          <span className="bold"> {attempts || 0}</span>
-        </div>
-        <div className="flex">
-          <span>Total Earned Points :</span>
-          <span className="bold"> {earnPoints || 0}</span>
+    <div className="h-screen w-full grid grid-cols-3 p-10 gap-10 bg-prussian_blue-500">
+      <div className="flex items-center col-span-1 flex-col space-y-10 rounded-lg shadow-lg bg-sky_blue-500 ">
+        <div className="w-full p-6 text-xl">
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">Name: </span>
+            <span className="bold"> {result.user.name} </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">Email:</span>
+            <span className="bold"> {result.user.email}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">Total Points:</span>
+            <span className="bold"> {result.totalPoints}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">Total Attempts:</span>
+            <span className="bold"> {result.questionsAttempted}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">Total Earned Points:</span>
+            <span className="bold"> {result.points}</span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">Result:</span>
+            <span className=""> {result.achived}</span>
+          </div>
         </div>
 
-        <div className="flex">
-          <span>Result :</span>
-          <span className="bold"> {flag ? "Passed" : "Failed"}</span>
-        </div>
-      </div>
-      <div className="start">
-        <Link className="btn" to={"/"} onClick={OnRestart}>
-          Restart
-        </Link>
+        <button
+          type="button"
+          onClick={restart}
+          className="relative rounded px-5 py-2.5 overflow-hidden group bg-prussian_blue-500 hover:bg-gradient-to-r hover:from-prussian_blue-500 hover:to-prussian_blue-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-prussian_blue-400 transition-all ease-out duration-300"
+        >
+          <span className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+          <span className="relative">Restart</span>
+        </button>
       </div>
 
-      <div className="container">
-        <ResultTable></ResultTable>
+      <div className="col-span-2 w-full mx-auto">
+        <ResultTable />
       </div>
     </div>
   );
