@@ -3,10 +3,12 @@ import {combineReducers, configureStore} from '@reduxjs/toolkit'
 /** call reducer */
 import  questionReducer  from './queston_reducer'
 import  resultReducer  from './result_reducer'
+import  quizReducer  from './quiz_reducer'
 
 const rootReducer=combineReducers({
     questions:questionReducer,
-    result:resultReducer
+    result: resultReducer,
+    quiz: quizReducer
 })
 //create store with reducer 
 export default configureStore({reducer:rootReducer})

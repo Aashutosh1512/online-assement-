@@ -10,7 +10,6 @@ export const questionReducer=createSlice({
     initialState:{
         queue:[],//storing all the questions from data base in the queue variable whose datatype is array 
         answers:[],//storing all the correct answer
-
         trace:0  //it track the user question eg if user go to next quesion it increment by 1 and decrement , when user go to prev question 
     },
     reducers:{
@@ -35,7 +34,6 @@ export const questionReducer=createSlice({
             if (state.trace+1>1)
             return {
                 ...state,
-                
                 trace: state.trace-1
             }
         },

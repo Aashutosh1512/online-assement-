@@ -1,59 +1,55 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
-export function attempts_Number(result){
+export function attempts_Number(result) {
   // return result.filter(r=>r!==undefined ).length;
-  var x=0;
-  for(var i=0;i<result.length;i++){
-    if (result[i]!==undefined) {
-        x++;
+  var x = 0;
+  for (var i = 0; i < result.length; i++) {
+    if (result[i] !== undefined) {
+      x++;
     }
   }
   return x;
 }
 
-export function earnPoints_Number(result,answers){
-  var x=0;
-  for(var i=0;i<result.length;i++){
-    if (result[i]===answers[i]) {
-        x++;
+export function earnPoints_Number(result, answers) {
+  var x = 0;
+  for (var i = 0; i < result.length; i++) {
+    if (result[i] === answers[i]) {
+      x++;
     }
   }
   return x;
-
 }
 
-export function flagResult(totalpoints,earnPoints){
-    return (totalpoints*50/100)<earnPoints;
-    //marks less than 50% fail 
+export function flagResult(totalpoints, earnPoints) {
+  return (totalpoints * 50) / 100 < earnPoints;
+  //marks less than 50% fail
 }
 
-///check user auth 
-export function CheckUserExist({children}){
-const auth=useSelector(state=>state.result.userId)
-return auth?children:<Navigate to={'/'} replace={true} > </Navigate>
+///check user auth
+export function CheckUserExist({ children }) {
+  const auth = useSelector((state) => state.result.userId);
+  return auth ? (
+    children
+  ) : (
+    <Navigate to={"/"} replace={true}>
+      {" "}
+    </Navigate>
+  );
 }
-
-
 
 /** get server data  */
 
-export async function getServerData(url,callback){
-const data =await ( await axios.get(url))?.data;
-return callback? callback(data):data;
+export async function getServerData(url, callback) {
+  const data = await (await axios.get(url))?.data;
+  return callback ? callback(data) : data;
 }
 
 // getServerData('http://localhost:8000/api/result')
 
-
 /** post  server data  */
-export async function postServerData(url,result,callback){
-  const data =await ( await axios.post(url,result))?.data;
-  return callback ? callback(data):data;
-  }
-
-  
-    
-  
-
-
+export async function postServerData(url, result, callback) {
+  const data = await (await axios.post(url, result))?.data;
+  return callback ? callback(data) : data;
+}
