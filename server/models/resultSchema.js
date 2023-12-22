@@ -1,17 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 /**result model  */
-const resultModel = new Schema({
-  username: { type: String },
-  result: {
-    type: Array,
-    default: [],
+const resultModel = new Schema(
+  {
+    user: { type: Object, required: true },
+    questionsAttempted: { type: Number, default: 0, required: true },
+    points: { type: Number, default: 0, required: true },
+    totalPoints: { type: Number, default: 0, required: true },
+    achived: { type: String, required: true },
   },
-  attempts: { type: Number, default: 0 },
-  points: { type: Number, default: 0 },
-  achived: { type: String, default: "" },
-  createdAt: { type: Date, default: Date.now },
-});
+  {
+    timestamps: true,
+  }
+);
 
-export default mongoose.model("result", resultModel);
+export default mongoose.model('result', resultModel);

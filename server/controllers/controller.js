@@ -1,12 +1,10 @@
-import Questions from "../models/questionSchema.js";
-import Results from "../models/resultSchema.js";
+import Questions from '../models/questionSchema.js';
+import Results from '../models/resultSchema.js';
 
 //import resultSchema from "../models/resultSchema.js";
-import nodemailer from "nodemailer";
-import mailgen from "mailgen";
-import Mailgen from "mailgen";
+import nodemailer from 'nodemailer';
+import Mailgen from 'mailgen';
 
-import UserSchema from "../models/userSchema.js";
 /** questions controllers  */
 
 // get all questions
@@ -16,7 +14,7 @@ export async function getQuestions(req, res) {
 
   try {
     let questions = [];
-    
+
     if (!subject && !difficulty) {
       questions = await Questions.find();
     } else if (subject && !difficulty) {
@@ -41,7 +39,7 @@ export async function insertQuestions(req, res) {
 
   try {
     Questions.insertMany(questions);
-    res.json({ msg: "data saved successfully " });
+    res.json({ msg: 'data saved successfully ' });
   } catch (error) {
     res.json({ error });
   }
@@ -51,7 +49,7 @@ export async function insertQuestions(req, res) {
 export async function dropQuestions(req, res) {
   try {
     await Questions.deleteMany();
-    res.json("sare questions delete kar diye hai ... ");
+    res.json('sare questions delete kar diye hai ... ');
   } catch (error) {
     res.json({ error });
   }
@@ -63,102 +61,71 @@ export async function dropQuestions(req, res) {
 
 export async function getResult(req, res) {
   try {
-    const r = await Results.find();
-    res.json(r);
+    const results = await Results.find();
+    res.json(results);
   } catch (error) {
     res.json({ error });
   }
 }
 
 /** post all result  */
-
 export async function storeResult(req, res) {
-  const prf = req.body.result;
-  const rr = "Passed";
-  if (prf < 80) {
-    rr = "Failed";
-  }
-
   try {
-    const { username, result, attempts, points, achived } = req.body;
+    const { user, questionsAttempted, points, achived, totalPoints } = req.body;
+
     let config = {
-      service: "gmail",
+      service: 'gmail',
       auth: {
-        user: "20bit002@ietdavv.edu.in",
-        pass: "adppynyxraafprak",
+        user: '20bit002@ietdavv.edu.in',
+        pass: 'adppynyxraafprak',
       },
     };
 
     let transporter = nodemailer.createTransport(config);
 
     let MailGenerator = new Mailgen({
-      theme: "cerberus",
+      theme: 'cerberus',
       product: {
-        name: "Mailgen",
-        link: "https://mailgen.js/",
+        name: 'Mailgen',
+        link: 'https://mailgen.js/',
       },
     });
+
     let response = {
       body: {
-        intro: "TEST RESULTS ",
+        intro: 'TEST RESULTS',
         table: {
           data: [
             {
-              MailId: username,
-              TotalPoint: result.length * 10,
+              Name: user.name,
+              MailId: user.email,
+              TotalPoint: totalPoints,
               Score: points,
-              Attempts: attempts,
-
+              Attempts: questionsAttempted,
               Result: achived,
             },
           ],
         },
       },
-      outro: " GIVE MORE QUIZS  ",
+      outro: ' GIVE MORE QUIZS',
     };
 
     let mail = MailGenerator.generate(response);
+
     let message = {
-      from: "20bit002@ietdavv.edu.in",
-      to: username,
-      subject: "TEST SCORE ",
+      from: '20bit002@ietdavv.edu.in',
+      to: user.email,
+      subject: 'TEST SCORE ',
       html: mail,
     };
+
     transporter.sendMail(message);
 
-    //  const {username,result,attempts,points,achived } =req.body;
-    if (!username && !result) {
-      // throw new Error('Data Not Provided.....');
-      return res.send("Data Not provided fill");
-    }
+    Results.create({ user, questionsAttempted, points, achived, totalPoints });
 
-    //-----------
-    Results.create({ username, result, attempts, points, achived });
-
-    // Results.findOneAndUpdate(
-    //     { username: username },
-    //     {
-    //       $set: {
-    //         result: rr,
-    //         attempts: attempts,
-    //         points: points,
-    //         achived: achived
-    //       }
-    //     },
-    //     { new: true, upsert: true }
-    //   )
-    //     .then(updatedResult => {
-    //       console.log('Result updated:', updatedResult);
-    //       // handle the case where the result was updated successfully
-    //     })
-    //     .catch(err => {
-    //       console.error(err);
-    //       // handle any errors that occur
-    //     });
-
-    //Results.create({username,result,attempts,points,achived })
-    res.json({ msg: "uuhuu !! result save ho gya ..🤞🤞. " });
+    res.json({ msg: 'uuhuu !! result save ho gya ..🤞🤞. ' });
   } catch (error) {
+    console.log(error);
     res.json({ error });
   }
 }
@@ -167,62 +134,22 @@ export async function storeResult(req, res) {
 export async function dropResult(req, res) {
   try {
     await Results.deleteMany();
-    res.json({ msg: "kar diya dada result delete " });
+    res.json({ msg: 'kar diya dada result delete ' });
   } catch (error) {
     res.json({ error });
   }
 }
 
-////----------
 export async function getUserResult(req, res) {
   try {
-    const { username, result, attempts, points, achived } = req.body;
-    if (!username && !result) throw new Error("Data Not Provided...!");
+    const { email } = req.params;
 
-    const r = await Results.findOne({ username });
+    if (!email) throw new Error('Email not provided...!');
 
-    res.json({ data: r });
-    //res.json(r);
+    const results = await Results.findOne({ email });
+
+    res.json({ data: results });
   } catch (error) {
     res.json({ error });
   }
 }
-
-//-------------------------
-
-/** 
- * 
- *  
- * 
- *  let testAccount = await nodemailer.createTestAccount();
-    let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
-      },
-    }); 
-    
-    let msg={
-      from: '"Fred Foo 👻" <foo@example.com>', // sender address
-      to: "bar@example.com, baz@example.com", // list of receivers
-      subject: "Result score", // Subject line
-      text: "Hello wcsbdjorld?", // plain text body
-      html: "<b>{Hello worbdsld?</b>", // html body
-    }
-  
-
-    transporter .sendMail(msg).then((info)=>{
-     return res.status(201).json({msg:"you should recive an email",
-
-    info:info.messageId,
-    preview:nodemailer.getTestMessageUrl(info)
-    
-    })
-    }).catch(error=>{
-      return res.status(500).json({error});
-    })
-
- */
