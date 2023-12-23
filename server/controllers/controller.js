@@ -1,5 +1,5 @@
-import Questions from '../models/questionSchema.js';
-import Results from '../models/resultSchema.js';
+import Questions from '../models/question.model.js';
+import Results from '../models/result.model.js';
 
 //import resultSchema from "../models/resultSchema.js";
 import nodemailer from 'nodemailer';
