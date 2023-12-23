@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-//redux store import
 import { useSelector, useDispatch } from 'react-redux';
 import {
   fetchQuestions,
@@ -106,28 +105,6 @@ export default function Quiz() {
           </form>
         )}
       </div>
-
-      {/* {selectedSubject && selectedDifficulty ? (
-        <>
-          <Questions
-            onChecked={onChecked}
-            selectedSubject={selectedSubject}
-            checked={check}
-          ></Questions>
-          <div className="grid">
-            <button
-              disabled={trace === 0}
-              className="btn prev"
-              onClick={onPrev}
-            >
-              Prev {'<<'}
-            </button>
-            <button className="btn next" onClick={onNext}>
-              {trace >= queue.length - 1 ? 'Submit' : 'Next'} {'>>'}
-            </button>
-          </div>
-        </>
-      ) : null} */}
     </div>
   );
 }

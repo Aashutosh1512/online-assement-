@@ -1,16 +1,19 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { getServerData } from '../helper/helper';
 
 export default function ResultTable() {
-  const [data, setData] = useState([]);
+  const [results, setResults] = useState([]);
 
   useEffect(() => {
-    getServerData(
-      `${process.env.REACT_APP_SERVER_HOSTNAME}/api/result`,
-      (res) => {
-        setData(res);
-      }
-    );
+    const fetchResults = async () => {
+      const res = await axios.get(
+        `${process.env.REACT_APP_SERVER_HOSTNAME}/api/result`
+      );
+
+      setResults(res.data);
+    };
+
+    fetchResults();
   }, []);
 
   return (
@@ -28,15 +31,15 @@ export default function ResultTable() {
           </tr>
         </thead>
         <tbody>
-          {data.map((v, i) => (
-            <tr className="odd:bg-white text-center even:bg-gray-50" key={i}>
-              <td className="px-6 py-3">{i}</td>
-              <td className="px-6 py-3">{v?.user.name}</td>
-              <td className="px-6 py-3">{v?.user.email}</td>
-              <td className="px-6 py-3">{v?.questionsAttempted}</td>
-              <td className="px-6 py-3">{v?.totalPoints}</td>
-              <td className="px-6 py-3">{v?.points}</td>
-              <td className="px-6 py-3">{v?.achived}</td>
+          {results.map((result, idx) => (
+            <tr className="odd:bg-white text-center even:bg-gray-50" key={idx}>
+              <td className="px-6 py-3">{idx}</td>
+              <td className="px-6 py-3">{result?.user.name}</td>
+              <td className="px-6 py-3">{result?.user.email}</td>
+              <td className="px-6 py-3">{result?.questionsAttempted}</td>
+              <td className="px-6 py-3">{result?.totalPoints}</td>
+              <td className="px-6 py-3">{result?.points}</td>
+              <td className="px-6 py-3">{result?.achived}</td>
             </tr>
           ))}
         </tbody>

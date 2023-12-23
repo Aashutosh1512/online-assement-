@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const { Schema } = mongoose;
 /** question model */
 
@@ -22,12 +22,12 @@ const questionModel = new Schema(
     },
     options: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model("Question", questionModel);
+export default mongoose.model('Question', questionModel);

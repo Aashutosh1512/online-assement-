@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import ResultTable from './ResultTable';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { resetQuiz, selectResult } from '../redux/quiz.slice';
 import { useNavigate } from 'react-router-dom';

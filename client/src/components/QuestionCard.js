@@ -58,7 +58,6 @@ const QuestionCard = ({ question }) => {
           >
             <input
               type="radio"
-              // name="answer"
               value={index}
               checked={answers[questionIndex] === index}
               onChange={handleChange}
