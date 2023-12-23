@@ -2,15 +2,17 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  selectQuestionIndex,
+  selectTotalQuestions,
+  selectStoreResultLoading,
+  selectAnswers,
+} from '../application/selectors';
+import {
   nextQuestion,
   previousQuestion,
-  selectAnswers,
-  selectQuestionIndex,
-  selectStoreResultLoading,
-  selectTotalQuestions,
   setAnswer,
-  storeResult,
-} from '../redux/quiz.slice';
+} from '../application/slice';
+import { storeResult } from '../application/thunks';
 
 const QuestionCard = ({ question }) => {
   const questionIndex = useSelector(selectQuestionIndex);

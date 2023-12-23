@@ -1,4 +1,4 @@
-const subjects = [
+export const subjects = [
   {
     name: 'Computer Network',
     value: 'computer-network',
@@ -16,5 +16,3 @@ const subjects = [
     value: 'dbms',
   },
 ];
-
-export default subjects;

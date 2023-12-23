@@ -1,4 +1,4 @@
-const difficulties = [
+export const difficulties = [
   {
     name: 'Easy',
     value: 'easy',
@@ -12,5 +12,3 @@ const difficulties = [
     value: 'hard',
   },
 ];
-
-export default difficulties;

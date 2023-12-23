@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import quizReducer from './quiz.slice';
-import userReducer from './user.slice';
+import quizReducer from './slice/quiz.slice';
+import userReducer from './slice/user.slice';
 
 const persistUserConfig = {
   key: 'user',

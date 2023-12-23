@@ -1,9 +1,9 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { instructions } from '../constants/instructions';
+import { instructions } from '../constants';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { setUser } from '../redux/user.slice';
+import { setUser } from '../application/slice';
 import { useNavigate } from 'react-router-dom';
 
 export default function Main() {

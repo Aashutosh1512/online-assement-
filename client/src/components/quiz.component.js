@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  fetchQuestions,
   selectQuestionsLoading,
   selectQuestion,
-} from '../redux/quiz.slice';
+  selectUser,
+} from '../application/selectors';
 
 import { useForm } from 'react-hook-form';
-import subjects from '../constants/subject';
-import difficulties from '../constants/difficulties';
-import { selectUser } from '../redux/user.slice';
-import QuestionCard from './QuestionCard';
+import { difficulties, subjects } from '../constants';
+import QuestionCard from './question-card.component';
 import { useNavigate } from 'react-router-dom';
+import { fetchQuestions } from '../application/thunks';
 
 export default function Quiz() {
   const dispatch = useDispatch();

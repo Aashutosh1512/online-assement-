@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import ResultTable from './ResultTable';
+import ResultTable from './result-table.component';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetQuiz, selectResult } from '../redux/quiz.slice';
+import { selectResult, selectUser } from '../application/selectors';
 import { useNavigate } from 'react-router-dom';
-import { selectUser } from '../redux/user.slice';
+import { resetQuiz } from '../application/slice';
 
 export default function Result() {
   const dispatch = useDispatch();
